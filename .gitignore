@@ -1,0 +1,8 @@
+secrets.json
+config.json
+
+**/venv**
+
+.vscode
+
+__pycache__
