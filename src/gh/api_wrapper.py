@@ -12,9 +12,9 @@ __ch.setFormatter(
     logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
 __logger.addHandler(__ch)
 
-project_query = """
+repo_project_query = """
 query {
-  repository(owner: "%(repo_owner)s", name: "%(repo_name)s") {
+  repository(owner: "%(username)s", name: "%(repo_name)s") {
     project(number: %(project_number)d) {
       name
       columns(first: 5) {
@@ -46,13 +46,55 @@ query {
 }
 """  # Heavily inspired by https://github.com/radekstepan/burnchart/issues/129#issuecomment-394469442
 
-def get_project(repo_owner: str, repo_name: str, project_number: int) -> dict:
-    query = project_query % {
-        'repo_owner': repo_owner,
+org_project_query = """
+query {
+  organization(login: "%(username)s") {
+    project(number: %(project_number)d) {
+      name
+      columns(first: 5) {
+        nodes {
+          name
+          cards(first: 50) {
+            nodes {
+              id
+              note
+              state
+              content {
+                ... on Issue {
+                  title
+                  createdAt
+                  closedAt
+                  labels(first: 5) {
+                    nodes {
+                      name
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+"""  # Heavily inspired by https://github.com/radekstepan/burnchart/issues/129#issuecomment-394469442
+
+def get_repo_project(username: str, repo_name: str, project_number: int) -> dict:
+    query = repo_project_query % {
+        'username': username,
         'repo_name': repo_name,
         'project_number': project_number}
     query_response = gh_api_query(query)
     project_data = query_response['data']['repository']['project']
+    return Project(project_data)
+
+def get_org_project(username: str, project_number: int) -> dict:
+    query = org_project_query % {
+        'username': username,
+        'project_number': project_number}
+    query_response = gh_api_query(query)
+    project_data = query_response['data']['organization']['project']
     return Project(project_data)
 
 def gh_api_query(query: str) -> dict:

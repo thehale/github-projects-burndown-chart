@@ -11,7 +11,7 @@ An easy to use [burndown chart](https://www.scrum.org/resources/scrum-glossary#:
 
 ## Features
 * Create a **burndown chart for a GitHub Project Board**.
-* Works for **private repositories**.
+* Works for projects in **private repositories** and **organizations**.
 * Includes a **trend line** for the current sprint.
 * Supports custom labels for **tracking points for issues**
 
@@ -66,9 +66,9 @@ pip install -r requirements.txt
 4. Make a copy of `src/config/config.json.dist` without the `.dist` ending.
     - This allows the `.gitignore` to exclude your `config.json` from being accidentally committed.
 5. Fill out all the configuration settings
-    - `repo_owner`: The username of the owner of the repo.
+    - `username`: The username of the organization or owner of the repo.
         - For example, `jhale1805`
-    - `repo_name`: The name of the repo.
+    - `repo_name`: The name of the repo. Leave blank if the project is in an organization instead of a repo.
         - For example, `github-projects-burndown-chart`
     - `project_number`: The id of the project for which you want to generate a burndown chart. This is found in the URL when looking at the project board on GitHub.
         - For example, `1` from [`https://github.com/jhale1805/github-projects-burndown-chart/projects/1`](https://github.com/jhale1805/github-projects-burndown-chart/projects/1)
