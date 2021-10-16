@@ -41,7 +41,8 @@ class BurndownChart:
 
         # Set titles and labels
         plt.title(f"{self.project.name}: Burndown Chart")
-        plt.ylabel("Outstanding Points")
+        points_label = config['settings']['points_label']
+        plt.ylabel(f"Outstanding {'Points' if points_label else 'Issues'}")
         plt.xlabel("Date")
 
         # Generate Plot

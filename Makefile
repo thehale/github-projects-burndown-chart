@@ -7,7 +7,7 @@ build: instructions
 
 run: instructions
 	cd ./src/github_projects_burndown_chart \
-	&& PYTHONPATH=. python main.py
+	&& PYTHONPATH=. python main.py $(project_type)
 
 test: instructions
 	coverage run \

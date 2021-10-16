@@ -8,3 +8,6 @@ __location__ = os.path.realpath(
 
 with open(os.path.join(__location__, 'RepositoryProject.graphql')) as query:
     RepositoryProject = query.read()
+
+with open(os.path.join(__location__, 'OrganizationProject.graphql')) as query:
+    OrganizationProject = query.read()

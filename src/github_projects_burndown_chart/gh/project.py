@@ -84,8 +84,12 @@ class Card:
 
     def __parse_points(self, card_data):
         card_points = 0
-        card_labels = card_data.get('labels', {"nodes": []})['nodes']
-        for label in card_labels:
-            if config['settings']['points_label'] in label['name']:
-                card_points += int(label['name'][len(config['settings']['points_label']):])
+        points_label = config['settings']['points_label']
+        if not points_label:
+            card_points = 1
+        else:
+            card_labels = card_data.get('labels', {"nodes": []})['nodes']
+            for label in card_labels:
+                if points_label in label['name']:
+                    card_points += int(label['name'][len(points_label):])
         return card_points
