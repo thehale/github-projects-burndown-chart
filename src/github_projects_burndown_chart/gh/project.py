@@ -86,6 +86,6 @@ class Card:
         card_points = 0
         card_labels = card_data.get('labels', {"nodes": []})['nodes']
         for label in card_labels:
-            if config['points_label'] in label['name']:
-                card_points += int(label['name'][len(config['points_label']):])
+            if config['settings']['points_label'] in label['name']:
+                card_points += int(label['name'][len(config['settings']['points_label']):])
         return card_points

@@ -9,10 +9,10 @@ class BurndownChart:
     def __init__(self, project: Project):
         # Initialize important dates
         self.start_date = datetime.strptime(
-            config['sprint_start_date'],
+            config['settings']['sprint_start_date'],
             '%Y-%m-%d')
         self.end_date = datetime.strptime(
-            config['sprint_end_date'],
+            config['settings']['sprint_end_date'],
             '%Y-%m-%d')
         self.project = project
     

@@ -57,30 +57,32 @@ pip install -r requirements.txt
 ```
 
 ## Usage
+### Configuration
 1. Create a [Personal Access Token](https://github.com/settings/tokens) with the `repo` scope.
     - Do not share this token with anyone! It gives the bearer full control over all private repositories you have access to!
     - This is required to pull the Project Board data from GitHub's GraphQL API.
-2. Make a copy of `src/config/secrets.json.dist` without the `.dist` ending.
+2. Make a copy of `src/github_projects_burndown_chart/config/secrets.json.dist` without the `.dist` ending.
     - This allows the `.gitignore` to exclude your `secrets.json` from being accidentally committed.
 3. Fill out the `github_token` with your newly created Personal Access Token.
-4. Make a copy of `src/config/config.json.dist` without the `.dist` ending.
+4. Make a copy of `src/github_projects_burndown_chart/config/config.json.dist` without the `.dist` ending.
     - This allows the `.gitignore` to exclude your `config.json` from being accidentally committed.
 5. Fill out all the configuration settings
-    - `repo_owner`: The username of the owner of the repo.
+    - `repository_project_query.repo_owner`: The username of the owner of the repo.
         - For example, `jhale1805`
-    - `repo_name`: The name of the repo.
+    - `repository_project_query.repo_name`: The name of the repo.
         - For example, `github-projects-burndown-chart`
-    - `project_number`: The id of the project for which you want to generate a burndown chart. This is found in the URL when looking at the project board on GitHub.
+    - `repository_project_query.project_number`: The id of the project for which you want to generate a burndown chart. This is found in the URL when looking at the project board on GitHub.
         - For example, `1` from [`https://github.com/jhale1805/github-projects-burndown-chart/projects/1`](https://github.com/jhale1805/github-projects-burndown-chart/projects/1)
-    - `sprint_start_date`: The first day of the sprint. Formatted as `YYYY-MM-DD`. 
+    - `settings.sprint_start_date`: The first day of the sprint. Formatted as `YYYY-MM-DD`. 
         - Must be entered here since GitHub Project Boards don't have an assigned start/end date.
         - For example, `2021-10-08`
-    - `sprint_end_date`: The last day of the sprint. Formatted as `YYYY-MM-DD`.
+    - `settings.sprint_end_date`: The last day of the sprint. Formatted as `YYYY-MM-DD`.
         - Must be entered here since GitHub Project Boards don't have an assigned start/end date.
         - For example, `2021-10-22`
-    - `points_label`: The prefix for issue labels containing the point value of the issue. Removing this prefix must leave just an integer.
+    - `settings.points_label`: The prefix for issue labels containing the point value of the issue. Removing this prefix must leave just an integer.
         - For example: `Points: ` (with the space)
-6. Run `python src/main.py` to generate the burndown chart.
+### Generating the Chart
+1. Run `make run` to generate the burndown chart.
     - This will pop up an interactive window containing the burndown chart, including a button for saving it as a picture.
 
 ## Contributing
