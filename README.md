@@ -11,7 +11,7 @@ An easy to use [burndown chart](https://www.scrum.org/resources/scrum-glossary#:
 
 ## Features
 * Create a **burndown chart for a GitHub Project Board**.
-* Works for **private repositories**.
+* Works for projects in **private repositories** and **organizations**.
 * Includes a **trend line** for the current sprint.
 * Supports custom labels for **tracking points for issues**
 
