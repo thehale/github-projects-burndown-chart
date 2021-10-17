@@ -15,24 +15,51 @@ __location__ = os.path.realpath(
         os.getcwd(),
         os.path.dirname(__file__)))
 
+###############################################################################
+# Load config.json
+###############################################################################
 try:
     with open(os.path.join(__location__, 'config.json')) as config_json:
-        config = json.load(config_json)
+        __config = json.load(config_json)
 except FileNotFoundError as err:
     __logger.critical(err)
     __logger.critical('Please create a config.json file in the config '
-        'directory; this tool cannot generate a burndown chart without it.')
+                      'directory; this tool cannot generate a burndown chart without it.')
     __logger.critical('See the project README.md and config/config.json.dist '
-        'for details.')
+                      'for details.')
     exit(1)
 
+
+class Config:
+
+    def __init__(self, raw_config: dict):
+        self.raw_config = raw_config
+
+    def set_project(self, project_type: str, project_name: str):
+        self.project_type = project_type
+        self.project_name = project_name
+
+    def __getitem__(self, key: str):
+        if not hasattr(self, 'project_type'):
+            raise AttributeError('No project has been set.')
+        if not hasattr(self, 'project_name'):
+            raise AttributeError('No project has been set.')
+        return self.raw_config[self.project_type][self.project_name][key]
+
+
+config = Config(__config)
+
+
+###############################################################################
+# Load secrets.json
+###############################################################################
 try:
     with open(os.path.join(__location__, 'secrets.json')) as secrets_json:
         secrets = json.load(secrets_json)
 except FileNotFoundError as err:
     __logger.critical(err)
     __logger.critical('Please create a secrets.json file in the config '
-        'directory; this tool cannot generate a burndown chart without it.')
+                      'directory; this tool cannot generate a burndown chart without it.')
     __logger.critical('See the project README.md and config/secrets.json.dist '
-        'for details.')
+                      'for details.')
     exit(1)

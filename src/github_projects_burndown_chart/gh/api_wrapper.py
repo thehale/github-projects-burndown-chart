@@ -15,15 +15,15 @@ __logger.addHandler(__ch)
 
 
 def get_repository_project() -> dict:
-    query_response = gh_api_query(
-        RepositoryProject, config.get('repository_project_query'))
+    query_variables = config['query_variables']
+    query_response = gh_api_query(RepositoryProject, query_variables)
     project_data = query_response['data']['repository']['project']
     return Project(project_data)
 
 
 def get_organization_project() -> dict:
-    query_response = gh_api_query(
-        OrganizationProject, config.get('organization_project_query'))
+    query_variables = config['query_variables']
+    query_response = gh_api_query(OrganizationProject, query_variables)
     project_data = query_response['data']['organization']['project']
     return Project(project_data)
 

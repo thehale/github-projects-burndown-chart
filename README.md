@@ -1,17 +1,20 @@
 # Burndown Chart for GitHub Projects
 An easy to use [burndown chart](https://www.scrum.org/resources/scrum-glossary#:~:text=B-,burn-down%20chart,-%3A%C2%A0a%20chart%20which) generator for [GitHub Project Boards](https://docs.github.com/en/issues/organizing-your-work-with-project-boards/managing-project-boards/about-project-boards).
 
+![Example Burndown Chart](./docs/images/example_burndown_chart.png)
+
 ## Table of Contents
 * [Features](#features)
 * [Installation](#installation)
 * [Assumptions](#assumptions)
+* [Configuration](#configuration)
 * [Usage](#usage)
 * [Contributing](#contributing)
 * [About](#about)
 
 ## Features
 * Create a **burndown chart for a GitHub Project Board**.
-* Works for projects in **private repositories** and **organizations**.
+* Works for projects in **public/private repositories** and **organizations**.
 * Includes a **trend line** for the current sprint.
 * Supports custom labels for **tracking points for issues**
 
@@ -20,9 +23,9 @@ This tool, while flexible, makes the following assumptions about your project ma
 * You use one and only one [GitHub Project Board](https://docs.github.com/en/issues/organizing-your-work-with-project-boards/managing-project-boards/about-project-boards) for each of your [Sprints](https://scrumguides.org/scrum-guide.html#the-sprint)
 * You use one and only one [GitHub Milestone](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/about-milestones) for each of your [User Stories](https://www.scrum.org/resources/blog/user-story-or-stakeholder-story)
 * You use one and only one [GitHub Issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues) for each of your [Sprint Backlog Items/Tasks](https://scrumguides.org/scrum-guide.html#sprint-backlog)
-* Each of your GitHub Issues has a [label](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/managing-labels) indicating how many [points](https://www.scrum.org/resources/scrum-glossary#:~:text=several%20ways%20such%20as-,user%20story%20points,-or%20task%20hours.%20Work) its corresponding task is worth.
+* If you want to track points, each of your GitHub Issues has a [label](https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/managing-labels) indicating how many [points](https://www.scrum.org/resources/scrum-glossary#:~:text=several%20ways%20such%20as-,user%20story%20points,-or%20task%20hours.%20Work) its corresponding task is worth.
     - Furthermore, all labels that indicate point values have the format `<prefix><int>`.
-    - However, multiple labels indicating points on the same Issue are supported.
+    - Multiple labels indicating points on the same Issue are supported.
 * A Sprint Backlog Task is considered [Done](https://www.scrum.org/resources/professional-scrum-developer-glossary#:~:text=D-,definition%20of%20done%3A,-a%20shared%20understanding) if its corresponding GitHub Issue is Closed.
 
 ## Installation
@@ -38,7 +41,7 @@ python -m venv ./venv
 
 ### 2. Activate the virtual environment
 
-*Linux/Mac OS*
+*Linux/macOS*
 ```
 source venv/bin/activate
 ```
@@ -56,34 +59,64 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Configuration
+### 1. Create a [Personal Access Token](https://github.com/settings/tokens) with the `repo` scope.
+Do not share this token with anyone! It gives the bearer full control over all private repositories you have access to!
+
+This is required to pull the Project Board data from GitHub's GraphQL API.
+### 2. Make a copy of `src/github_projects_burndown_chart/config/secrets.json.dist` without the `.dist` ending.
+This allows the `.gitignore` to exclude your `secrets.json` from being accidentally committed.
+### 3. Fill out the `github_token` with your newly created Personal Access Token.
+### 4. Make a copy of `src/github_projects_burndown_chart/config/config.json.dist` without the `.dist` ending.
+This allows the `.gitignore` to exclude your `config.json` from being accidentally committed.
+### 5. Fill out all the configuration settings
+#### Repository Projects
+`project_name`: A memorable name for your project for use with this tool.
+
+`project_name.query_variables`
+| Variable | Meaning |
+|----------|---------|
+| `repo_owner` | The username of the owner of the repo. <br/><br/> Example: `jhale1805` |
+| `repo_name` | The name of the repo. <br/><br/> Example: `github-projects-burndown-chart`|
+| `project_number` | The ID of the project for which you want to generate a burndown chart. This is found in the URL when looking at the project board on GitHub. <br/><br/> Example: `1` (from [`https://github.com/jhale1805/github-projects-burndown-chart/projects/1`](https://github.com/jhale1805/github-projects-burndown-chart/projects/1)) |
+| `column_count` | A number >= the number of columns on the project board. (DEFAULT: 5)<br/><br/> A closer fit improves performance and reduces the chance of rate limiting from GitHub's GraphQL API. |
+| `max_cards_per_column_count` | A number >= the maximum number of cards in any column on the project board. (DEFAULT: 50)<br/><br/> A closer fit improves performance and reduces the chance of rate limiting from GitHub's GraphQL API. |
+| `labels_per_issue_count` | A number >= the number of labels on any issue on project board. (DEFAULT: 5)<br/><br/> A closer fit improves performance and reduces the chance of rate limiting from GitHub's GraphQL API. |
+
+`project_name.settings`
+| Variable | Meaning |
+|----------|---------|
+| `sprint_start_date` | The first day of the sprint formatted as `YYYY-MM-DD`. <br/><br/> Must be entered here since GitHub Project Boards don't have an assigned start/end date. <br/><br/> Example: `2021-10-08` |
+| `sprint_end_date` | The last day of the sprint formatted as `YYYY-MM-DD`. <br/><br/> Must be entered here since GitHub Project Boards don't have an assigned start/end date. <br/><br/> Example: `2021-10-21` |
+| `points_label` | (OPTIONAL) The prefix for issue labels containing the point value of the issue. Removing this prefix must leave just an integer. If set to `null`, the burndown chart will count open issues instead of points.<br/><br/> Example: `Points: ` (with the space) |
+
+#### Organization Projects
+All settings are the same as for the [Repository Projects](#repository-projects), except `repo_owner` and `repo_name` are replaced with `organization_name` as shown below.
+
+`project_name.query_variables`
+| Variable | Meaning |
+|----------|---------|
+| `organization_name` | The name of the organization on GitHub as it appears in the URL of their organization page. <br/><br/> Example: `golang` (from https://github.com/golang) |
 ## Usage
-### Configuration
-1. Create a [Personal Access Token](https://github.com/settings/tokens) with the `repo` scope.
-    - Do not share this token with anyone! It gives the bearer full control over all private repositories you have access to!
-    - This is required to pull the Project Board data from GitHub's GraphQL API.
-2. Make a copy of `src/github_projects_burndown_chart/config/secrets.json.dist` without the `.dist` ending.
-    - This allows the `.gitignore` to exclude your `secrets.json` from being accidentally committed.
-3. Fill out the `github_token` with your newly created Personal Access Token.
-4. Make a copy of `src/github_projects_burndown_chart/config/config.json.dist` without the `.dist` ending.
-    - This allows the `.gitignore` to exclude your `config.json` from being accidentally committed.
-5. Fill out all the configuration settings
-    - `repository_project_query.repo_owner`: The username of the owner of the repo.
-        - For example, `jhale1805`
-    - `repository_project_query.repo_name`: The name of the repo.
-        - For example, `github-projects-burndown-chart`
-    - `repository_project_query.project_number`: The id of the project for which you want to generate a burndown chart. This is found in the URL when looking at the project board on GitHub.
-        - For example, `1` from [`https://github.com/jhale1805/github-projects-burndown-chart/projects/1`](https://github.com/jhale1805/github-projects-burndown-chart/projects/1)
-    - `settings.sprint_start_date`: The first day of the sprint. Formatted as `YYYY-MM-DD`. 
-        - Must be entered here since GitHub Project Boards don't have an assigned start/end date.
-        - For example, `2021-10-08`
-    - `settings.sprint_end_date`: The last day of the sprint. Formatted as `YYYY-MM-DD`.
-        - Must be entered here since GitHub Project Boards don't have an assigned start/end date.
-        - For example, `2021-10-22`
-    - `settings.points_label`: The prefix for issue labels containing the point value of the issue. Removing this prefix must leave just an integer.
-        - For example: `Points: ` (with the space)
-### Generating the Chart
-1. Run `make run` to generate the burndown chart.
-    - This will pop up an interactive window containing the burndown chart, including a button for saving it as a picture.
+Given that `PROJECT_TYPE` is one of `[repository, organization]` and `PROJECT_NAME` matches a key in the `config.json` under the chosen `PROJECT_TYPE`, run the following command:
+```
+make run project_type=PROJECT_TYPE project_name=PROJECT_NAME
+```
+
+This will pop up an interactive window containing the burndown chart, including a button for saving it as a picture.
+
+### Example
+Make a copy of `example.config.json` without the leading `example.`
+
+To see this repository's example project board:
+```
+make run project_type=repository project_name=burndown_chart_kickoff
+```
+
+To see Golang's progress on their current roadmap:
+```
+make run project_type=organization project_name=golang_on_deck
+```
 
 ## Contributing
 Contributions are welcome via a [Pull Request](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request).

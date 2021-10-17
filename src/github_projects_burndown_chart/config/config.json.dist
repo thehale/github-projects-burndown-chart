@@ -1,22 +1,64 @@
 {
-    "repository_project_query": {
+  "repository": {
+    "PROJECT_1_NAME": {
+      "query_variables": {
         "repo_owner": "REQUIRED",
         "repo_name": "REQUIRED",
         "project_number": -1,  //REQUIRED
         "column_count": 5,
         "max_cards_per_column_count": 50,
         "labels_per_issue_count": 5
-    },
-    "organization_project_query": {
+      },
+      "settings": {
+        "sprint_start_date": "REQUIRED",
+        "sprint_end_date": "REQUIRED",
+        "points_label": null
+      }
+    }
+    "PROJECT_2_NAME": {
+      "query_variables": {
+        "repo_owner": "REQUIRED",
+        "repo_name": "REQUIRED",
+        "project_number": -1,  //REQUIRED
+        "column_count": 5,
+        "max_cards_per_column_count": 50,
+        "labels_per_issue_count": 5
+      },
+      "settings": {
+        "sprint_start_date": "REQUIRED",
+        "sprint_end_date": "REQUIRED",
+        "points_label": null
+      }
+    }
+  },
+  "organization": {
+    "PROJECT_1_NAME": {
+      "query_variables": {
         "organization_name": "REQUIRED",
         "project_number": -1,  //REQUIRED
         "column_count": 5,
         "max_cards_per_column_count": 50,
         "labels_per_issue_count": 5
-    },
-    "settings": {
+      },
+      "settings": {
         "sprint_start_date": "REQUIRED",
         "sprint_end_date": "REQUIRED",
-        "points_label": "REQUIRED"
+        "points_label": null
+      }
     }
+    "PROJECT_2_NAME": {
+      "query_variables": {
+        "organization_name": "REQUIRED",
+        "project_number": -1,  //REQUIRED
+        "column_count": 5,
+        "max_cards_per_column_count": 50,
+        "labels_per_issue_count": 5
+      },
+      "settings": {
+        "sprint_start_date": "REQUIRED",
+        "sprint_end_date": "REQUIRED",
+        "points_label": null
+      }
+    }
+  }
 }
