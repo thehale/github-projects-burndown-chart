@@ -1,0 +1,31 @@
+query OrganizationProject($organization_name: String!, $project_number: Int!, $column_count: Int!, $max_cards_per_column_count: Int!, $labels_per_issue_count: Int!) {
+  organization(login: $organization_name) {
+    project(number: $project_number) {
+      name
+      columns(first: $column_count) {
+        nodes {
+          name
+          cards(first: $max_cards_per_column_count) {
+            nodes {
+              id
+              note
+              state
+              content {
+                ... on Issue {
+                  title
+                  createdAt
+                  closedAt
+                  labels(first: $labels_per_issue_count) {
+                    nodes {
+                      name
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
