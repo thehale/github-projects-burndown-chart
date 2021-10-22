@@ -1,6 +1,9 @@
 from datetime import datetime, timedelta
+from typing import Dict
+from dateutil.parser import isoparse
 
 from config import config
+from util.dates import TODAY_UTC
 
 
 class Project:
@@ -17,33 +20,52 @@ class Project:
     def total_points(self):
         return sum([column.get_total_points() for column in self.columns])
 
-    def points_completed_by_date(self, start_date, end_date):
-        points_completed_by_date = {
-            str(date)[:10] : 0 
-            for date in [
-                start_date + timedelta(days=x) 
-                for x in range(0, (end_date - start_date).days + 1)
-            ]
-        }
-        for column in self.columns:
-            for card in column.cards:
-                if card.closedAt:
-                    date_str = str(card.closedAt)[:10]
-                    points_completed_by_date[date_str] += card.points
+    def points_completed_by_date(self, start_date: datetime, end_date: datetime) -> Dict[datetime, int]:
+        """Computes the number of points completed by date.
+        Basically the data behind a burnup chart for the given date range.
+
+        Args:
+            start_date (datetime): The start date of the chart in UTC.
+            end_date (datetime): The end date of the chart in UTC.
+
+        Returns:
+            Dict[datetime, int]: A dictionary of date and points completed.
+        """
+        points_completed_by_date = {}
+
+        cards = [card for column in self.columns for card in column.cards]
+        completed_cards = [card for card in cards if card.closedAt is not None]
+        sprint_dates = [start_date + timedelta(days=x)
+                        # The +1 includes the end_date in the list
+                        for x in range(0, (end_date - start_date).days + 1)]
+        for date in sprint_dates:
+            # Get the issues completed before midnight on the given date.
+            date_23_59 = date + timedelta(hours=23, minutes=59)
+            cards_done_by_date = [card for card in completed_cards
+                                  if card.closedAt <= date_23_59]
+            points_completed_by_date[date] = sum([card.points for card
+                                                  in cards_done_by_date])
         return points_completed_by_date
 
-    def outstanding_points_by_day(self, start_date, end_date):
-        outstanding_points_by_day = {}
-        points_completed = 0
-        points_completed_by_date = self.points_completed_by_date(start_date, end_date)
-        current_date = datetime.now()
-        for date in points_completed_by_date:
-            points_completed += points_completed_by_date[date]
-            if datetime.strptime(date, '%Y-%m-%d') < current_date:
-                outstanding_points_by_day[date] = self.total_points - points_completed
-            else:
-                outstanding_points_by_day[date] = None
-        return outstanding_points_by_day
+    def outstanding_points_by_date(self, start_date: datetime, end_date: datetime) -> Dict[datetime, int]:
+        """Computes the number of points remaining to be completed by date.
+        Basically the data behind a burndown chart for the given date range.
+
+        Args:
+            start_date (datetime): The start date of the chart in UTC.
+            end_date (datetime): The end date of the chart in UTC.
+
+        Returns:
+            Dict[datetime, int]: A dictionary of date and points remaining.
+        """
+        points_completed_by_date = self.points_completed_by_date(
+            start_date, end_date)
+        today_23_59 = TODAY_UTC + timedelta(hours=23, minutes=59)
+        return {
+            date: self.total_points - points_completed_by_date[date]
+            if date <= today_23_59 else None
+            for date in points_completed_by_date
+        }
 
 
 class Column:
@@ -69,17 +91,13 @@ class Card:
     def __parse_createdAt(self, card_data):
         createdAt = None
         if card_data.get('createdAt'):
-            createdAt = datetime.strptime(
-                card_data['createdAt'][:10],
-                '%Y-%m-%d')
+            createdAt = isoparse(card_data['createdAt'])
         return createdAt
 
     def __parse_closedAt(self, card_data):
         closedAt = None
         if card_data.get('closedAt'):
-            closedAt = datetime.strptime(
-                card_data['closedAt'][:10],
-                '%Y-%m-%d')
+            closedAt = isoparse(card_data['closedAt'])
         return closedAt
 
     def __parse_points(self, card_data):
@@ -89,7 +107,7 @@ class Card:
             card_points = 1
         else:
             card_labels = card_data.get('labels', {"nodes": []})['nodes']
-            for label in card_labels:
-                if points_label in label['name']:
-                    card_points += int(label['name'][len(points_label):])
+            card_points = sum([int(label['name'][len(points_label):])
+                              for label in card_labels
+                              if points_label in label['name']])
         return card_points
