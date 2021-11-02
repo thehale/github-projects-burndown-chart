@@ -88,6 +88,7 @@ This allows the `.gitignore` to exclude your `config.json` from being accidental
 |----------|---------|
 | `sprint_start_date` | The first day of the sprint formatted as `YYYY-MM-DD`. <br/><br/> Must be entered here since GitHub Project Boards don't have an assigned start/end date. <br/><br/> Example: `2021-10-08` |
 | `sprint_end_date` | The last day of the sprint formatted as `YYYY-MM-DD`. <br/><br/> Must be entered here since GitHub Project Boards don't have an assigned start/end date. <br/><br/> Example: `2021-10-21` |
+| `chart_end_date` | (OPTIONAL) The last day to show on the burndown chart formatted as `YYYY-MM-DD`. <br/><br/> Used to change the end date of the chart without affecting the slope of the ideal burndown line (e.g. to show tasks that were completed after the official end of a sprint). <br/><br/> Example: `2021-10-24` |
 | `points_label` | (OPTIONAL) The prefix for issue labels containing the point value of the issue. Removing this prefix must leave just an integer. If set to `null`, the burndown chart will count open issues instead of points.<br/><br/> Example: `Points: ` (with the space) |
 
 #### Organization Projects
@@ -100,7 +101,7 @@ All settings are the same as for the [Repository Projects](#repository-projects)
 ## Usage
 Given that `PROJECT_TYPE` is one of `[repository, organization]` and `PROJECT_NAME` matches a key in the `config.json` under the chosen `PROJECT_TYPE`, run the following command:
 ```
-make run project_type=PROJECT_TYPE project_name=PROJECT_NAME
+make run type=PROJECT_TYPE name=PROJECT_NAME
 ```
 
 This will pop up an interactive window containing the burndown chart, including a button for saving it as a picture.
@@ -110,12 +111,12 @@ Make a copy of `example.config.json` without the leading `example.`
 
 To see this repository's example project board:
 ```
-make run project_type=repository project_name=burndown_chart_kickoff
+make run type=repository name=burndown_chart_kickoff
 ```
 
 To see Golang's progress on their current roadmap:
 ```
-make run project_type=organization project_name=golang_on_deck
+make run type=organization name=golang_on_deck
 ```
 
 ## Contributing
