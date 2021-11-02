@@ -13,21 +13,26 @@ class BurndownChart:
             config['settings']['sprint_start_date'])
         self.end_date_utc: datetime = parse_to_utc(
             config['settings']['sprint_end_date'])
+        self.chart_end_date_utc: datetime = parse_to_utc(
+            config['settings']['chart_end_date']) \
+                if config['settings'].get('chart_end_date') else None
 
         self.project: Project = project
 
     def render(self):
+        end_date = self.chart_end_date_utc if self.chart_end_date_utc else self.end_date_utc
         outstanding_points_by_day = self.project.outstanding_points_by_date(
             self.start_date_utc,
-            self.end_date_utc)
+            end_date)
         # Load date dict for priority values with x being range of how many days are in sprint
         x = list(range(len(outstanding_points_by_day.keys())))
         y = list(outstanding_points_by_day.values())
+        sprint_days = (self.end_date_utc - self.start_date_utc).days
 
         # Plot point values for sprint along xaxis=range yaxis=points over time
         plt.plot(x, y)
         plt.axline((x[0], self.project.total_points),
-                   slope=-(self.project.total_points/(len(y)-1)),
+                   slope=-(self.project.total_points/(sprint_days)),
                    color="green",
                    linestyle=(0, (5, 5)))
 
