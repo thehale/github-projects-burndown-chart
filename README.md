@@ -100,7 +100,7 @@ All settings are the same as for the [Repository Projects](#repository-projects)
 ## Usage
 Given that `PROJECT_TYPE` is one of `[repository, organization]` and `PROJECT_NAME` matches a key in the `config.json` under the chosen `PROJECT_TYPE`, run the following command:
 ```
-make run project_type=PROJECT_TYPE project_name=PROJECT_NAME
+make run type=PROJECT_TYPE name=PROJECT_NAME
 ```
 
 This will pop up an interactive window containing the burndown chart, including a button for saving it as a picture.
@@ -110,12 +110,12 @@ Make a copy of `example.config.json` without the leading `example.`
 
 To see this repository's example project board:
 ```
-make run project_type=repository project_name=burndown_chart_kickoff
+make run type=repository name=burndown_chart_kickoff
 ```
 
 To see Golang's progress on their current roadmap:
 ```
-make run project_type=organization project_name=golang_on_deck
+make run type=organization name=golang_on_deck
 ```
 
 ## Contributing
