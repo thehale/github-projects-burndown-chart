@@ -2,6 +2,7 @@ import argparse
 
 from chart.burndown import BurndownChart
 from config import config
+from discord import webhook
 from gh.api_wrapper import get_organization_project, get_repository_project
 from gh.project import Project
 
@@ -13,6 +14,7 @@ if __name__ == '__main__':
                         choices=['repository', 'organization'],
                         help="The type of project to generate a burndown chart for. Can be either 'organization' or 'repository'.")
     parser.add_argument("project_name", help="The name of the project as it appears in the config.json")
+    parser.add_argument("--discord", action='store_true', help="If present, posts the burndown chart to the configured webhook")
     args = parser.parse_args()
 
     # Point the config to the correct project
@@ -26,5 +28,10 @@ if __name__ == '__main__':
     
     # Generate the burndown chart
     burndown_chart = BurndownChart(project)
-    burndown_chart.render()
+    if args.discord:
+        chart_path = "./tmp/chart.png"
+        burndown_chart.generate_chart(chart_path)
+        webhook.post_burndown_chart(chart_path)
+    else:
+        burndown_chart.render()
     print('Done')

@@ -5,6 +5,9 @@ config.json
 # VS Code Project Files
 .vscode
 
+# Local temp files
+tmp
+
 
 ############################################################################
 # From https://github.com/github/gitignore/blob/master/Python.gitignore

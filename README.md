@@ -119,6 +119,16 @@ To see Golang's progress on their current roadmap:
 make run type=organization name=golang_on_deck
 ```
 
+### Discord Webhook
+This project also supports posting the burndown chart to a Discord Webhook. Here's how to set that up:
+1. [Create a webhook](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks#:~:text=Facebook-,making%20a%20webhook,-With%20that%20in) in your Discord server.
+2. Put the webhook's URL into the `discord_webhook` setting in `secrets.json`.
+3. Add the `--discord` option when running the script.
+
+```
+make run type=repository name=burndown_chart_kickoff opts="--discord"
+```
+
 ## Contributing
 Contributions are welcome via a [Pull Request](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request).
 

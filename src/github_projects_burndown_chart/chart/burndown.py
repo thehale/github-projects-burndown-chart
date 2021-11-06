@@ -1,5 +1,6 @@
-import matplotlib.pyplot as plt
 from datetime import datetime
+import matplotlib.pyplot as plt
+import os
 
 from config import config
 from gh.project import Project
@@ -19,7 +20,7 @@ class BurndownChart:
 
         self.project: Project = project
 
-    def render(self):
+    def __prepare_chart(self):
         end_date = self.chart_end_date_utc if self.chart_end_date_utc else self.end_date_utc
         outstanding_points_by_day = self.project.outstanding_points_by_date(
             self.start_date_utc,
@@ -52,5 +53,12 @@ class BurndownChart:
         plt.ylabel(f"Outstanding {'Points' if points_label else 'Issues'}")
         plt.xlabel("Date")
 
-        # Generate Plot
+    def generate_chart(self, path):
+        self.__prepare_chart()
+        if not os.path.exists(path):
+            os.makedirs(os.path.dirname(path))
+        plt.savefig(path)
+
+    def render(self):
+        self.__prepare_chart()
         plt.show()
