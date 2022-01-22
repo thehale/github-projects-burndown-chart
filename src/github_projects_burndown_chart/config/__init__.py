@@ -1,6 +1,9 @@
+from datetime import datetime
 import json
 import os
 import logging
+
+from util.dates import parse_to_utc
 
 # Set up logging
 __logger = logging.getLogger(__name__)
@@ -39,12 +42,25 @@ class Config:
         self.project_type = project_type
         self.project_name = project_name
 
+    def utc_sprint_start(self) -> datetime:
+        return self.__get_date('sprint_start_date')
+
+    def utc_sprint_end(self) -> datetime:
+        return self.__get_date('sprint_end_date')
+
+    def utc_chart_end(self) -> datetime:
+        return self.__get_date('chart_end_date')
+
     def __getitem__(self, key: str):
         if not hasattr(self, 'project_type'):
             raise AttributeError('No project has been set.')
         if not hasattr(self, 'project_name'):
             raise AttributeError('No project has been set.')
         return self.raw_config[self.project_type][self.project_name][key]
+
+    def __get_date(self, name: str) -> datetime:
+        date = self['settings'].get(name)
+        return parse_to_utc(date) if date else None
 
 
 config = Config(__config)

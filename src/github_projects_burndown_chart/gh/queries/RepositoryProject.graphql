@@ -1,4 +1,3 @@
-# Heavily inspired by https://github.com/radekstepan/burnchart/issues/129#issuecomment-394469442
 query RepositoryProject($repo_owner: String!, $repo_name: String!, $project_number: Int!, $column_count: Int!, $max_cards_per_column_count: Int!, $labels_per_issue_count: Int!) {
   repository(owner: $repo_owner, name: $repo_name) {
     project(number: $project_number) {
@@ -15,6 +14,14 @@ query RepositoryProject($repo_owner: String!, $repo_name: String!, $project_numb
               content {
                 ... on Issue {
                   title
+                  timelineItems(first: 20, itemTypes: [ASSIGNED_EVENT]) {
+                    nodes {
+                      __typename
+                      ... on AssignedEvent {
+                        createdAt
+                      }
+                    }
+                  }
                   createdAt
                   closedAt
                   labels(first: $labels_per_issue_count) {

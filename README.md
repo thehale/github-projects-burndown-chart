@@ -90,6 +90,7 @@ This allows the `.gitignore` to exclude your `config.json` from being accidental
 | `sprint_end_date` | The last day of the sprint formatted as `YYYY-MM-DD`. <br/><br/> Must be entered here since GitHub Project Boards don't have an assigned start/end date. <br/><br/> Example: `2021-10-21` |
 | `chart_end_date` | (OPTIONAL) The last day to show on the burndown chart formatted as `YYYY-MM-DD`. <br/><br/> Used to change the end date of the chart without affecting the slope of the ideal burndown line (e.g. to show tasks that were completed after the official end of a sprint). <br/><br/> Example: `2021-10-24` |
 | `points_label` | (OPTIONAL) The prefix for issue labels containing the point value of the issue. Removing this prefix must leave just an integer. If set to `null`, the burndown chart will count open issues instead of points.<br/><br/> Example: `Points: ` (with the space) |
+| `calculators` | (OPTIONAL) A list of the calculator(s) to use to calculate the point burndown lines to show on the burndown chart. (DEFAULT: [`closed`])<br/><br/>_OPTIONS:_ `closed`, `assigned`, `created`, `taiga`<br/><br/> Example: [`taiga`, `closed`, `assigned`] |
 
 #### Organization Projects
 All settings are the same as for the [Repository Projects](#repository-projects), except `repo_owner` and `repo_name` are replaced with `organization_name` as shown below.

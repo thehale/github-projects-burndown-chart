@@ -1,6 +1,10 @@
 import logging
+import os
 import requests
-from requests.api import head
+from datetime import date
+import hashlib
+import json
+import tempfile
 
 from config import config, secrets
 from .project import Project
@@ -29,13 +33,25 @@ def get_organization_project() -> dict:
 
 
 def gh_api_query(query: str, variables: dict) -> dict:
+    response = __get_from_cache(query, variables)
+    if not response:
+        response = __get_from_api(query, variables)
+        __cache_response(query, variables, response)
+    return response
+
+
+def prepare_payload(query, variables):
+    return {'query': query, 'variables': variables}
+
+
+def __get_from_api(query, variables):
     headers = {'Authorization': 'bearer %s' % secrets['github_token']} \
         if 'github_token' in secrets else {}
 
     response = requests.post(
         'https://api.github.com/graphql',
         headers=headers,
-        json={'query': query, 'variables': variables}).json()
+        json=prepare_payload(query, variables)).json()
 
     # Gracefully report failures due to bad credentials
     if response.get('message') and response['message'] == 'Bad credentials':
@@ -53,3 +69,26 @@ def gh_api_query(query: str, variables: dict) -> dict:
         __logger.critical(response['errors'])
         exit(1)
     return response
+
+
+def __get_from_cache(query, variables):
+    temp_path = __temp_path(query, variables)
+    if os.path.exists(temp_path):
+        with open(temp_path, 'r') as f:
+            return json.load(f)
+    return None
+
+
+def __cache_response(query, variables, response):
+    temp_path = __temp_path(query, variables)
+    with open(temp_path, 'w') as f:
+        json.dump(response, f)
+
+
+def __temp_path(query, variables):
+    temp_dir = tempfile.gettempdir()
+    payload = prepare_payload(query, variables)
+    payload.update({'today': str(date.today())})
+    filename = f"{hashlib.sha256(json.dumps(payload).encode('utf-8')).hexdigest()}.json"
+    temp_path = os.path.join(temp_dir, filename)
+    return temp_path
