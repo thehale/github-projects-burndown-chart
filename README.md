@@ -31,7 +31,7 @@ This tool, while flexible, makes the following assumptions about your project ma
 ## Installation
 ### 0. Clone this repository
 ```
-git clone https://github.com/jhale1805/github-projects-burndown-chart.git
+git clone https://github.com/thehale/github-projects-burndown-chart.git
 cd github-projects-burndown-chart
 ```
 ### 1. Create a virtual environment
@@ -76,9 +76,9 @@ This allows the `.gitignore` to exclude your `config.json` from being accidental
 `project_name.query_variables`
 | Variable | Meaning |
 |----------|---------|
-| `repo_owner` | The username of the owner of the repo. <br/><br/> Example: `jhale1805` |
+| `repo_owner` | The username of the owner of the repo. <br/><br/> Example: `thehale` |
 | `repo_name` | The name of the repo. <br/><br/> Example: `github-projects-burndown-chart`|
-| `project_number` | The ID of the project for which you want to generate a burndown chart. This is found in the URL when looking at the project board on GitHub. <br/><br/> Example: `1` (from [`https://github.com/jhale1805/github-projects-burndown-chart/projects/1`](https://github.com/jhale1805/github-projects-burndown-chart/projects/1)) |
+| `project_number` | The ID of the project for which you want to generate a burndown chart. This is found in the URL when looking at the project board on GitHub. <br/><br/> Example: `1` (from [`https://github.com/thehale/github-projects-burndown-chart/projects/1`](https://github.com/thehale/github-projects-burndown-chart/projects/1)) |
 | `column_count` | A number >= the number of columns on the project board. (DEFAULT: 5)<br/><br/> A closer fit improves performance and reduces the chance of rate limiting from GitHub's GraphQL API. |
 | `max_cards_per_column_count` | A number >= the maximum number of cards in any column on the project board. (DEFAULT: 50)<br/><br/> A closer fit improves performance and reduces the chance of rate limiting from GitHub's GraphQL API. |
 | `labels_per_issue_count` | A number >= the number of labels on any issue on project board. (DEFAULT: 5)<br/><br/> A closer fit improves performance and reduces the chance of rate limiting from GitHub's GraphQL API. |
@@ -138,6 +138,6 @@ Contributions are welcome via a [Pull Request](https://docs.github.com/en/github
 By submitting a contribution, you are agreeing that the full contents of your contribution will be subject to the license terms governing this repository, and you are affirming that you have the legal right to subject your contribution to these terms.
 
 ## About
-This project was first created by Joseph Hale (@jhale1805) and Jacob Janes (@jgjanes) to facilitate their coursework in the BS Software Engineering degree program at Arizona State University.
+This project was first created by Joseph Hale (@thehale) and Jacob Janes (@jgjanes) to facilitate their coursework in the BS Software Engineering degree program at Arizona State University.
 
 We hope it will be especially useful to other students in computing-related fields.
