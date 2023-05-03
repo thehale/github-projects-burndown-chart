@@ -1,6 +1,11 @@
 # Burndown Chart for GitHub Projects
 An easy to use [burndown chart](https://www.scrum.org/resources/scrum-glossary#:~:text=B-,burn-down%20chart,-%3A%C2%A0a%20chart%20which) generator for [GitHub Project Boards](https://docs.github.com/en/issues/organizing-your-work-with-project-boards/managing-project-boards/about-project-boards).
 
+<!-- BADGES -->
+[![](https://badgen.net/github/license/thehale/github-projects-burndown-chart)](https://github.com/thehale/github-projects-burndown-chart/blob/master/LICENSE)
+[![](https://badgen.net/badge/icon/Sponsor/pink?icon=github&label)](https://github.com/sponsors/thehale)
+[![](https://badgen.net/badge/icon/Follow%20@jhaledev/1DA1F2?icon=twitter&label)](https://twitter.com/intent/user?screen_name=jhaledev)
+
 ![Example Burndown Chart](./docs/images/example_burndown_chart.png)
 
 ## Table of Contents
