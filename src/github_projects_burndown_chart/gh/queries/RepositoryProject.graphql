@@ -1,4 +1,11 @@
-query RepositoryProject($repo_owner: String!, $repo_name: String!, $project_number: Int!, $column_count: Int!, $max_cards_per_column_count: Int!, $labels_per_issue_count: Int!) {
+query RepositoryProject(
+  $repo_owner: String!
+  $repo_name: String!
+  $project_number: Int!
+  $column_count: Int!
+  $max_cards_per_column_count: Int!
+  $labels_per_issue_count: Int!
+) {
   repository(owner: $repo_owner, name: $repo_name) {
     project(number: $project_number) {
       name
@@ -6,18 +13,30 @@ query RepositoryProject($repo_owner: String!, $repo_name: String!, $project_numb
       columns(first: $column_count) {
         nodes {
           name
-          cards(first: $max_cards_per_column_count) {
+          cards(
+            first: $max_cards_per_column_count
+            archivedStates: [NOT_ARCHIVED]
+          ) {
             nodes {
               id
               note
               state
+              column {
+                name
+              }
               content {
                 ... on Issue {
                   title
-                  timelineItems(first: 20, itemTypes: [ASSIGNED_EVENT]) {
+                  timelineItems(
+                    first: 20
+                    itemTypes: [ASSIGNED_EVENT, MOVED_COLUMNS_IN_PROJECT_EVENT]
+                  ) {
                     nodes {
                       __typename
                       ... on AssignedEvent {
+                        createdAt
+                      }
+                      ... on MovedColumnsInProjectEvent {
                         createdAt
                       }
                     }

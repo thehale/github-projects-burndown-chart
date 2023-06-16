@@ -33,10 +33,11 @@ def get_organization_project() -> dict:
 
 
 def gh_api_query(query: str, variables: dict) -> dict:
-    response = __get_from_cache(query, variables)
+    # response = __get_from_cache(query, variables)
+    response = None
     if not response:
         response = __get_from_api(query, variables)
-        __cache_response(query, variables, response)
+        # __cache_response(query, variables, response)
     return response
 
 

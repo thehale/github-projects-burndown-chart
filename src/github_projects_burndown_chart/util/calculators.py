@@ -5,7 +5,6 @@ from gh.project import Card
 
 
 class PointsCalculator:
-
     def __init__(self, cards: List[Card]):
         self.cards: List[Card] = cards
 
@@ -14,39 +13,75 @@ class PointsCalculator:
 
 
 class ClosedPointsCalculator(PointsCalculator):
-
     def points_as_of(self, date: datetime):
-        return sum(card.points for card in self.cards
-                   if isinstance(card.closed, datetime)
-                   and card.closed <= date)
+        return sum(
+            card.points
+            for card in self.cards
+            if isinstance(card.closed, datetime) and card.closed <= date
+        )
 
 
 class AssignedPointsCalculator(PointsCalculator):
-
     def points_as_of(self, date: datetime):
-        return sum(card.points for card in self.cards
-                   if isinstance(card.assigned, datetime)
-                   and card.assigned <= date)
+        return sum(
+            card.points
+            for card in self.cards
+            if isinstance(card.assigned, datetime) and card.assigned <= date
+        )
 
 
 class CreatedPointsCalculator(PointsCalculator):
-
     def points_as_of(self, date: datetime):
-        return sum(card.points for card in self.cards
-                   if isinstance(card.created, datetime)
-                   and card.created <= date)
+        return sum(
+            card.points
+            for card in self.cards
+            if isinstance(card.created, datetime) and card.created <= date
+        )
 
 
 class TaigaPointsCalculator(PointsCalculator):
-
     def points_as_of(self, date: datetime):
-        closed_by_date = [card for card in self.cards
-                          if isinstance(getattr(card, 'closed'), datetime)
-                          and getattr(card, 'closed') <= date]
+        closed_by_date = [
+            card
+            for card in self.cards
+            if isinstance(getattr(card, "closed"), datetime)
+            and getattr(card, "closed") <= date
+        ]
         points = sum(card.points for card in closed_by_date)
-        assigned_by_date = [card for card in self.cards
-                            if isinstance(getattr(card, 'assigned'), datetime)
-                            and getattr(card, 'assigned') <= date
-                            and card not in closed_by_date]
+        assigned_by_date = [
+            card
+            for card in self.cards
+            if isinstance(getattr(card, "assigned"), datetime)
+            and getattr(card, "assigned") <= date
+            and card not in closed_by_date
+        ]
         points += sum(card.points / 2 for card in assigned_by_date)
+        return points
+
+
+class ProgressCalculator(PointsCalculator):
+    def points_as_of(self, date: datetime):
+        closed_by_date = [
+            card
+            for card in self.cards
+            if isinstance(getattr(card, "closed"), datetime)
+            and getattr(card, "closed") <= date
+        ]
+        points = sum(card.points for card in closed_by_date)
+        moved_by_date = [
+            card
+            for card in self.cards
+            if isinstance(getattr(card, "moved"), datetime)
+            and getattr(card, "moved") <= date
+        ]
+        points += sum(
+            card.points * 0.75
+            for card in moved_by_date
+            if "In Progress" in card.column_name
+        )
+        points += sum(
+            card.points * 0.9
+            for card in moved_by_date
+            if "Code Review" in card.column_name
+        )
         return points
