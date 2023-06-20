@@ -68,8 +68,13 @@ class Card:
 
     def __parse_movedAt(self, card_data) -> datetime:
         movedAt = None
-        last_event = card_data["timelineItems"]["nodes"][-1]
-        if last_event.get("__typename") == "MovedColumnsInProjectEvent":
+        last_event = None
+
+        events = card_data.get("timelineItems").get("nodes")
+        if events:
+            last_event = card_data["timelineItems"]["nodes"][-1]
+
+        if last_event and last_event.get("__typename") == "MovedColumnsInProjectEvent":
             card_data["movedAt"] = last_event["createdAt"]
         if card_data.get("movedAt"):
             movedAt = isoparse(card_data["movedAt"])
