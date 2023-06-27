@@ -70,8 +70,8 @@ class Card:
         movedAt = None
         last_event = None
 
-        events = card_data.get("timelineItems").get("nodes")
-        if events:
+        timeline_items = card_data.get("timelineItems")
+        if timeline_items and timeline_items.get("nodes"):
             last_event = card_data["timelineItems"]["nodes"][-1]
 
         if last_event and last_event.get("__typename") == "MovedColumnsInProjectEvent":
