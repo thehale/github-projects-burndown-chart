@@ -4,7 +4,7 @@ An easy to use [burndown chart](https://www.scrum.org/resources/scrum-glossary#:
 <!-- BADGES -->
 [![](https://badgen.net/github/license/thehale/github-projects-burndown-chart)](https://github.com/thehale/github-projects-burndown-chart/blob/master/LICENSE)
 [![](https://badgen.net/badge/icon/Sponsor/pink?icon=github&label)](https://github.com/sponsors/thehale)
-[![](https://badgen.net/badge/icon/Follow%20@jhaledev/1DA1F2?icon=twitter&label)](https://twitter.com/intent/user?screen_name=jhaledev)
+[![](https://img.shields.io/badge/LinkedIn-thehale-0A66C2?logo=linkedin)](https://linkedin.com/in/thehale)
 
 ![Example Burndown Chart](./docs/images/example_burndown_chart.png)
 
