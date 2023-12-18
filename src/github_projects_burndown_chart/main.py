@@ -22,7 +22,7 @@ def parse_cli_args():
     return parser.parse_args()
 
 
-def download_project_data(args):
+def download_project_data(args) -> Project:
     if args.project_type == 'repository':
         project: Project = get_repository_project()
     elif args.project_type == 'organization':
