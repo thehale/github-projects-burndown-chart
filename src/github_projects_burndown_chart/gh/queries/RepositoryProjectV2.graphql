@@ -1,0 +1,66 @@
+query RepositoryProject($repo_owner: String!, $repo_name: String!, $project_number: Int!, $labels_per_issue_count: Int!, $cursor: String) {
+  repository(owner: $repo_owner, name: $repo_name) {
+    projectV2(number: $project_number) {
+      title
+      field(name: "Status") {
+        ... on ProjectV2SingleSelectField {
+          options {
+            name
+          }
+        }
+      }
+      items(first: 100, after: $cursor) {
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+        nodes {
+          id
+          fieldValueByName(name: "Status") {
+            ... on ProjectV2ItemFieldSingleSelectValue {
+              name
+            }
+          }
+          content {
+            ...on Issue {
+              title
+              timelineItems(first: 20, itemTypes: [ASSIGNED_EVENT]) {
+                nodes {
+                  __typename
+                  ... on AssignedEvent {
+                    createdAt
+                  }
+                }
+              }
+              createdAt
+              closedAt
+              labels(first: $labels_per_issue_count) {
+                nodes {
+                  name
+                }
+              }
+            }
+            ...on PullRequest {
+              title
+              timelineItems(first: 20, itemTypes: [ASSIGNED_EVENT]) {
+                nodes {
+                  __typename
+                  ... on AssignedEvent {
+                    createdAt
+                  }
+                }
+              }
+              createdAt
+              closedAt
+              labels(first: $labels_per_issue_count) {
+                nodes {
+                  name
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

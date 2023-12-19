@@ -3,7 +3,7 @@ import argparse
 from chart.burndown import *
 from config import config
 from discord import webhook
-from gh.api_wrapper import get_organization_project, get_repository_project
+from gh.api_wrapper import get_organization_project, get_repository_project, get_project_v2
 from gh.project import Project
 from util import calculators, colors
 from util.stats import *
@@ -22,12 +22,14 @@ def parse_cli_args():
     return parser.parse_args()
 
 
-def download_project_data(project_type: str) -> Project:
+def download_project_data(project_type: str, v2: bool) -> Project:
+    if v2:
+        return get_project_v2(project_type)
+
     if project_type == 'repository':
-        project: Project = get_repository_project()
+        return get_repository_project()
     elif project_type == 'organization':
-        project: Project = get_organization_project()
-    return project
+        return get_organization_project()
 
 
 def prepare_chart_data(stats: ProjectStats):
@@ -55,7 +57,7 @@ def prepare_chart_data(stats: ProjectStats):
 if __name__ == '__main__':
     args = parse_cli_args()
     config.set_project(args.project_type, args.project_name)
-    project = download_project_data(args.project_type)
+    project = download_project_data(args.project_type, config['settings']['v2'])
     stats = ProjectStats(project, config.utc_sprint_start(),
                          config.utc_chart_end() or config.utc_sprint_end())
     # Generate the burndown chart

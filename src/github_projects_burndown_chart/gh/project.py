@@ -5,6 +5,18 @@ from config import config
 
 
 class Project:
+    columns = None
+
+    @property
+    def total_points(self):
+        return sum([column.get_total_points() for column in self.columns])
+
+    @property
+    def cards(self):
+        return [card for column in self.columns for card in column.cards]
+
+
+class ProjectV1(Project):
     def __init__(self, project_data):
         self.name = project_data['name']
         self.columns = self.__parse_columns(project_data)
@@ -19,13 +31,23 @@ class Project:
         cards = [Card(card_data) for card_data in cards_data]
         return cards
 
-    @property
-    def total_points(self):
-        return sum([column.get_total_points() for column in self.columns])
 
-    @property
-    def cards(self):
-        return [card for column in self.columns for card in column.cards]
+class ProjectV2(Project):
+    def __init__(self, project_data):
+        self.name = project_data['title']
+        self.columns = self.__parse_columns(project_data)
+
+    def __parse_columns(self, project_data):
+        column_dict = {}
+        for option in project_data['field']['options']:
+            column_dict[option['name']] = []
+
+        for item_data in project_data['items']['nodes']:
+            status = item_data['fieldValueByName']['name']
+            column_dict[status].append(Card(item_data))
+
+        columns = [Column(column_data) for column_data in column_dict.values()]
+        return columns
 
 
 class Column:
