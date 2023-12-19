@@ -17,6 +17,8 @@ def parse_cli_args():
                         help="The type of project to generate a burndown chart for. Can be either 'organization' or 'repository'.")
     parser.add_argument("project_name",
                         help="The name of the project as it appears in the config.json")
+    parser.add_argument("--filepath",
+                        help="The filepath where the burndown chart is saved.")
     parser.add_argument("--discord", action='store_true',
                         help="If present, posts the burndown chart to the configured webhook")
     return parser.parse_args()
@@ -64,6 +66,8 @@ if __name__ == '__main__':
         chart_path = "./tmp/chart.png"
         burndown_chart.generate_chart(chart_path)
         webhook.post_burndown_chart(chart_path)
+    elif args.filepath:
+        burndown_chart.generate_chart(args.filepath)
     else:
         burndown_chart.render()
     print('Done')
