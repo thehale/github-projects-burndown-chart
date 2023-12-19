@@ -22,10 +22,10 @@ def parse_cli_args():
     return parser.parse_args()
 
 
-def download_project_data(args) -> Project:
-    if args.project_type == 'repository':
+def download_project_data(project_type: str) -> Project:
+    if project_type == 'repository':
         project: Project = get_repository_project()
-    elif args.project_type == 'organization':
+    elif project_type == 'organization':
         project: Project = get_organization_project()
     return project
 
@@ -55,7 +55,7 @@ def prepare_chart_data(stats: ProjectStats):
 if __name__ == '__main__':
     args = parse_cli_args()
     config.set_project(args.project_type, args.project_name)
-    project = download_project_data(args)
+    project = download_project_data(args.project_type)
     stats = ProjectStats(project, config.utc_sprint_start(),
                          config.utc_chart_end() or config.utc_sprint_end())
     # Generate the burndown chart
