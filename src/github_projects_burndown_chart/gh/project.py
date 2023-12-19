@@ -11,8 +11,13 @@ class Project:
 
     def __parse_columns(self, project_data):
         columns_data = project_data['columns']['nodes']
-        columns = [Column(column_data) for column_data in columns_data]
+        columns = [Column(self.__parse_cards(column_data)) for column_data in columns_data]
         return columns
+
+    def __parse_cards(self, column_data):
+        cards_data = column_data['cards']['nodes']
+        cards = [Card(card_data) for card_data in cards_data]
+        return cards
 
     @property
     def total_points(self):
@@ -24,13 +29,8 @@ class Project:
 
 
 class Column:
-    def __init__(self, column_data):
-        self.cards = self.__parse_cards(column_data)
-
-    def __parse_cards(self, column_data):
-        cards_data = column_data['cards']['nodes']
-        cards = [Card(card_data) for card_data in cards_data]
-        return cards
+    def __init__(self, cards):
+        self.cards = cards
 
     def get_total_points(self):
         return sum([card.points for card in self.cards])
