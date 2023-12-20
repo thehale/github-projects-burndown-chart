@@ -38,12 +38,12 @@ class ProjectV2(Project):
         self.columns = self.__parse_columns(project_data)
 
     def __parse_columns(self, project_data):
-        column_dict = {}
+        column_dict = {None: []}
         for option in project_data['field']['options']:
             column_dict[option['name']] = []
 
         for item_data in project_data['items']['nodes']:
-            status = item_data['fieldValueByName']['name']
+            status = (item_data.get('fieldValueByName') or {}).get('name')
             column_dict[status].append(Card(item_data))
 
         columns = [Column(column_data) for column_data in column_dict.values()]
