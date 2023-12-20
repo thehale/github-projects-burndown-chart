@@ -65,7 +65,7 @@ pip install -r requirements.txt
 ```
 
 ## Configuration
-### 1. Create a [Personal Access Token](https://github.com/settings/tokens) with the `repo` scope.
+### 1. Create a [Personal Access Token](https://github.com/settings/tokens) with the `repo` scope. If Project V2, add `read:project` scope.
 Do not share this token with anyone! It gives the bearer full control over all private repositories you have access to!
 
 This is required to pull the Project Board data from GitHub's GraphQL API.
