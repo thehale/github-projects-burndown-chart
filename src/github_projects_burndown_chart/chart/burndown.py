@@ -80,8 +80,12 @@ class BurndownChart:
 
     def generate_chart(self, path):
         self.__prepare_chart()
-        if not os.path.exists(path):
-            os.makedirs(os.path.dirname(path))
+
+        # Create directories if it needs
+        dirname = os.path.dirname(path)
+        if not os.path.exists(dirname):
+            os.makedirs(dirname)
+
         plt.savefig(path)
 
     def render(self):
