@@ -11,3 +11,9 @@ with open(os.path.join(__location__, 'RepositoryProject.graphql')) as query:
 
 with open(os.path.join(__location__, 'OrganizationProject.graphql')) as query:
     OrganizationProject = query.read()
+
+with open(os.path.join(__location__, 'RepositoryProjectV2.graphql')) as query:
+    RepositoryProjectV2 = query.read()
+
+with open(os.path.join(__location__, 'OrganizationProjectV2.graphql')) as query:
+    OrganizationProjectV2 = query.read()

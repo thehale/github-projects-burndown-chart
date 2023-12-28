@@ -7,8 +7,8 @@ import json
 import tempfile
 
 from config import config, secrets
-from .project import Project
-from .queries import OrganizationProject, RepositoryProject
+from .project import Project, ProjectV1, ProjectV2
+from .queries import OrganizationProject, OrganizationProjectV2, RepositoryProject, RepositoryProjectV2
 
 # Set up logging
 __logger = logging.getLogger(__name__)
@@ -18,18 +18,40 @@ __ch.setFormatter(
 __logger.addHandler(__ch)
 
 
-def get_repository_project() -> dict:
+__project_v2_queries = {
+    'repository': RepositoryProjectV2,
+    'organization': OrganizationProjectV2,
+}
+
+
+def get_repository_project() -> Project:
     query_variables = config['query_variables']
     query_response = gh_api_query(RepositoryProject, query_variables)
     project_data = query_response['data']['repository']['project']
-    return Project(project_data)
+    return ProjectV1(project_data)
 
 
-def get_organization_project() -> dict:
+def get_organization_project() -> Project:
     query_variables = config['query_variables']
     query_response = gh_api_query(OrganizationProject, query_variables)
     project_data = query_response['data']['organization']['project']
-    return Project(project_data)
+    return ProjectV1(project_data)
+
+
+def get_project_v2(project_type) -> Project:
+    query = __project_v2_queries[project_type]
+    query_variables = config['query_variables'].copy()
+    query_response = gh_api_query(query, query_variables)
+    project_data = query_response['data'][project_type]['projectV2']
+    page_info = project_data['items']['pageInfo']
+    while page_info['hasNextPage']:
+        query_variables['cursor'] = page_info['endCursor']
+        query_response = gh_api_query(query, query_variables)
+        items = query_response['data'][project_type]['projectV2']['items']
+        project_data['items']['nodes'].extend(items['nodes'])
+        page_info = items['pageInfo']
+
+    return ProjectV2(project_data)
 
 
 def gh_api_query(query: str, variables: dict) -> dict:

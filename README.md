@@ -65,7 +65,7 @@ pip install -r requirements.txt
 ```
 
 ## Configuration
-### 1. Create a [Personal Access Token](https://github.com/settings/tokens) with the `repo` scope.
+### 1. Create a [Personal Access Token](https://github.com/settings/tokens) with the `repo` scope. If Project V2, add `read:project` scope.
 Do not share this token with anyone! It gives the bearer full control over all private repositories you have access to!
 
 This is required to pull the Project Board data from GitHub's GraphQL API.
@@ -84,8 +84,8 @@ This allows the `.gitignore` to exclude your `config.json` from being accidental
 | `repo_owner` | The username of the owner of the repo. <br/><br/> Example: `thehale` |
 | `repo_name` | The name of the repo. <br/><br/> Example: `github-projects-burndown-chart`|
 | `project_number` | The ID of the project for which you want to generate a burndown chart. This is found in the URL when looking at the project board on GitHub. <br/><br/> Example: `1` (from [`https://github.com/thehale/github-projects-burndown-chart/projects/1`](https://github.com/thehale/github-projects-burndown-chart/projects/1)) |
-| `column_count` | A number >= the number of columns on the project board. (DEFAULT: 5)<br/><br/> A closer fit improves performance and reduces the chance of rate limiting from GitHub's GraphQL API. |
-| `max_cards_per_column_count` | A number >= the maximum number of cards in any column on the project board. (DEFAULT: 50)<br/><br/> A closer fit improves performance and reduces the chance of rate limiting from GitHub's GraphQL API. |
+| `column_count` | A number >= the number of columns on the project board. (DEFAULT: 5)<br/><br/> A closer fit improves performance and reduces the chance of rate limiting from GitHub's GraphQL API. If Project V2, it is optional. |
+| `max_cards_per_column_count` | A number >= the maximum number of cards in any column on the project board. (DEFAULT: 50)<br/><br/> A closer fit improves performance and reduces the chance of rate limiting from GitHub's GraphQL API. If Project V2, it is optional. |
 | `labels_per_issue_count` | A number >= the number of labels on any issue on project board. (DEFAULT: 5)<br/><br/> A closer fit improves performance and reduces the chance of rate limiting from GitHub's GraphQL API. |
 
 `project_name.settings`
@@ -96,6 +96,7 @@ This allows the `.gitignore` to exclude your `config.json` from being accidental
 | `chart_end_date` | (OPTIONAL) The last day to show on the burndown chart formatted as `YYYY-MM-DD`. <br/><br/> Used to change the end date of the chart without affecting the slope of the ideal burndown line (e.g. to show tasks that were completed after the official end of a sprint). <br/><br/> Example: `2021-10-24` |
 | `points_label` | (OPTIONAL) The prefix for issue labels containing the point value of the issue. Removing this prefix must leave just an integer. If set to `null`, the burndown chart will count open issues instead of points.<br/><br/> Example: `Points: ` (with the space) |
 | `calculators` | (OPTIONAL) A list of the calculator(s) to use to calculate the point burndown lines to show on the burndown chart. (DEFAULT: [`closed`])<br/><br/>_OPTIONS:_ `closed`, `assigned`, `created`, `taiga`<br/><br/> Example: [`taiga`, `closed`, `assigned`] |
+| `version` | (OPTIONAL) The version number of GitHub Projects to use the burndown chart. (DEFAULT: [`1`])<br/><br/> OPTIONS: `1`, `2`<br/><br/> Example: `2` |
 
 #### Organization Projects
 All settings are the same as for the [Repository Projects](#repository-projects), except `repo_owner` and `repo_name` are replaced with `organization_name` as shown below.

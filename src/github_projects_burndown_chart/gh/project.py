@@ -5,14 +5,7 @@ from config import config
 
 
 class Project:
-    def __init__(self, project_data):
-        self.name = project_data['name']
-        self.columns = self.__parse_columns(project_data)
-
-    def __parse_columns(self, project_data):
-        columns_data = project_data['columns']['nodes']
-        columns = [Column(column_data) for column_data in columns_data]
-        return columns
+    columns = None
 
     @property
     def total_points(self):
@@ -23,14 +16,43 @@ class Project:
         return [card for column in self.columns for card in column.cards]
 
 
-class Column:
-    def __init__(self, column_data):
-        self.cards = self.__parse_cards(column_data)
+class ProjectV1(Project):
+    def __init__(self, project_data):
+        self.name = project_data['name']
+        self.columns = self.__parse_columns(project_data)
+
+    def __parse_columns(self, project_data):
+        columns_data = project_data['columns']['nodes']
+        columns = [Column(self.__parse_cards(column_data)) for column_data in columns_data]
+        return columns
 
     def __parse_cards(self, column_data):
         cards_data = column_data['cards']['nodes']
         cards = [Card(card_data) for card_data in cards_data]
         return cards
+
+
+class ProjectV2(Project):
+    def __init__(self, project_data):
+        self.name = project_data['title']
+        self.columns = self.__parse_columns(project_data)
+
+    def __parse_columns(self, project_data):
+        column_dict = {None: []}
+        for option in project_data['field']['options']:
+            column_dict[option['name']] = []
+
+        for item_data in project_data['items']['nodes']:
+            status = (item_data.get('fieldValueByName') or {}).get('name')
+            column_dict[status].append(Card(item_data))
+
+        columns = [Column(column_data) for column_data in column_dict.values()]
+        return columns
+
+
+class Column:
+    def __init__(self, cards):
+        self.cards = cards
 
     def get_total_points(self):
         return sum([card.points for card in self.cards])
