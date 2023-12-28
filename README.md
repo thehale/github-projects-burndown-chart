@@ -136,6 +136,14 @@ This project also supports posting the burndown chart to a Discord Webhook. Here
 make run type=repository name=burndown_chart_kickoff opts="--discord"
 ```
 
+### Save as file
+This project also supports saving the burndown chart file. Here's how to set that up:
+1. Add the `--filepath=$filepath` option when running the script.
+
+```
+make run type=repository name=burndown_chart_kickoff opts="--filepath=./tmp/chart.png"
+```
+
 ## Contributing
 Contributions are welcome via a [Pull Request](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request).
 
